@@ -1,4 +1,4 @@
-package com.lucidity.pojo.cart;
+package com.lucidity.pojo.request.cart;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
