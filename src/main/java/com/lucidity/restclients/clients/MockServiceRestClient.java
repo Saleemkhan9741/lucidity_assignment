@@ -6,6 +6,8 @@ import com.lucidity.enums.HTTPRequestType;
 import com.lucidity.restclients.BaseRestClient;
 import com.lucidity.utils.PropertyReader;
 import io.restassured.response.Response;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.mockserver.client.MockServerClient;
 
 import static org.mockserver.model.HttpRequest.request;
@@ -13,6 +15,7 @@ import static org.mockserver.model.HttpResponse.response;
 
 public class MockServiceRestClient {
 
+    private static final Logger LOGGER = LogManager.getLogger(MockServiceRestClient.class);
     private static MockServiceRestClient mockServiceRestClient;
     private static BaseRestClient baseRestClient;
     private static final PropertyReader propertyReader = PropertyReader.getPropertyReader();
@@ -40,7 +43,8 @@ public class MockServiceRestClient {
      * Adds a user segment mock to the running MockServer
      * Example: mockUserSegment("1", "p1");
      */
-    public static void mockUserSegment(String userId, String segment) {
+    public static void mockUserSegment(String userId, String segmentId) {
+        LOGGER.info("Mocking User Segment, user_id {} and segment_id {}", userId, segmentId);
         MockServerClient client = new MockServerClient(HOST, PORT);
         client
                 .when(
@@ -52,7 +56,7 @@ public class MockServiceRestClient {
                 .respond(
                         response()
                                 .withStatusCode(200)
-                                .withBody("{\"segment\": \"" + segment + "\"}")
+                                .withBody("{\"segment\": \"" + segmentId + "\"}")
                 );
     }
 
