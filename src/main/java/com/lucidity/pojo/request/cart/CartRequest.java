@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class CartRequest {
     @JsonProperty("cart_value")
-    private double cartValue;
+    private int cartValue;
     @JsonProperty("user_id")
     private int userId;
     @JsonProperty("restaurant_id")

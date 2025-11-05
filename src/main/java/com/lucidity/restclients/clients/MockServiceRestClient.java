@@ -1,14 +1,19 @@
 package com.lucidity.restclients.clients;
 
-import com.lucidity.endpoints.CartEndPoints;
 import com.lucidity.endpoints.MockEndPoints;
 import com.lucidity.enums.HTTPRequestType;
 import com.lucidity.restclients.BaseRestClient;
 import com.lucidity.utils.PropertyReader;
+import com.lucidity.utils.SerializerHelper;
 import io.restassured.response.Response;
+import org.apache.http.HttpStatus;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.mockserver.client.MockServerClient;
+import org.testng.Assert;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.mockserver.model.HttpRequest.request;
 import static org.mockserver.model.HttpResponse.response;
@@ -36,7 +41,13 @@ public class MockServiceRestClient {
     }
 
     public Response getSegmentForUser(int userId){
-        return baseRestClient.whenGetRequestIsInvoked(MockEndPoints.GET_USER_SEGMENT,null,null, String.format("user_id=%s",userId),null);
+        Map<String, String> headers = new HashMap<>();
+        headers.put("content-type","application/json");
+        Response response = baseRestClient.whenGetRequestIsInvoked(MockEndPoints.GET_USER_SEGMENT, headers, null,
+                String.format("user_id=%s", userId), null);
+        Assert.assertEquals(response.getStatusCode(), HttpStatus.SC_OK);
+        LOGGER.info("Apply Offer response {}", response.getBody().asString());
+        return response;
     }
 
     /**
