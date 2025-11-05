@@ -1,7 +1,7 @@
 package com.lucidity.restclients.clients;
 
 import com.lucidity.endpoints.CartEndPoints;
-import com.lucidity.pojo.CartRequest;
+import com.lucidity.pojo.cart.CartRequest;
 import com.lucidity.restclients.BaseRestClient;
 import com.lucidity.utils.PropertyReader;
 import io.restassured.response.Response;

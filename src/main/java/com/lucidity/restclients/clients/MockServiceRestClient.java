@@ -28,4 +28,6 @@ public class MockServiceRestClient {
     public Response getSegmentForUser(int userId){
         return baseRestClient.whenGetRequestIsInvoked(MockEndPoints.GET_USER_SEGMENT,null,null, String.format("user_id=%s",userId),null);
     }
+
+
 }

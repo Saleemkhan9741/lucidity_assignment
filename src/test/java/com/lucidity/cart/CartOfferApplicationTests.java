@@ -1,6 +1,7 @@
 package com.lucidity.cart;
 
 import com.lucidity.restclients.clients.MockServiceRestClient;
+import com.lucidity.utils.MockServerUtil;
 import io.restassured.response.Response;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -13,7 +14,6 @@ public class CartOfferApplicationTests {
     @Test(description = "verify apply cart")
     public void verifyApplyCart(){
         LOGGER.info("verify apply cart");
-        Response response = MockServiceRestClient.getInstance().getSegmentForUser(1);
-        System.out.println(response.getBody().asString());
+        MockServerUtil.mockUserSegment("2","p2");
     }
 }

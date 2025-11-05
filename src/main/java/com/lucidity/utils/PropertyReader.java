@@ -114,12 +114,6 @@ public class PropertyReader {
                 case DEV:
                     testEnvFileName = getPath("dev.properties");
                     break;
-                case LOCAL:
-                    testEnvFileName = getPath("local.properties");
-                    break;
-                case DOCKER:
-                    testEnvFileName = getPath("docker.properties");
-                    break;
                 default:
                     throw new RuntimeException(String.format("%s Environment Not defined", environment));
             }
