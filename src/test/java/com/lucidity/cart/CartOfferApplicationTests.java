@@ -174,7 +174,7 @@ public class CartOfferApplicationTests {
         createOffer(OfferType.FLATX.name(), "2",20,"p15");
 
         // Step 3: Apply cart offer
-        CartRequest cartRequest1 = createCartRequest(150,"1",20);
+        CartRequest cartRequest1 = createCartRequest(200,"1",20);
         Response response = CartServiceRestClient.getInstance().applyOffer(cartRequest1);
 
         ApplyCartResponse applyCartResponse1 = DeserializerHelper.getObjectMapper()
