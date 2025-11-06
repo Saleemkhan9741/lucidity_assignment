@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+<suite name="Cart Offer Application Suite" verbose="2" parallel="false">
+    <listeners>
+        <listener class-name="com.lucidity.reporting.TestListener"/>
+    </listeners>
+
+    <test name="FlatX and FlatX% Offers">
+        <classes>
+            <class name="com.lucidity.cart.CartOfferApplicationTests"/>
+        </classes>
+    </test>
+</suite>
