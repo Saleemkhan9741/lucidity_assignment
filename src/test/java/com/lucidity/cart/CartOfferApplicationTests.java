@@ -1,6 +1,7 @@
 package com.lucidity.cart;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.lucidity.BaseTest;
 import com.lucidity.data.cart.CartDataProvider;
 import com.lucidity.enums.OfferType;
 import com.lucidity.pojo.request.cart.CartRequest;
@@ -21,7 +22,7 @@ import org.testng.asserts.SoftAssert;
 
 import java.util.List;
 
-public class CartOfferApplicationTests {
+public class CartOfferApplicationTests extends BaseTest {
 
     @BeforeMethod
     private void clearMock(){
