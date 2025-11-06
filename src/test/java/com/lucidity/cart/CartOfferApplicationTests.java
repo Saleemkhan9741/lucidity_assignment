@@ -1,6 +1,5 @@
 package com.lucidity.cart;
 
-import com.aventstack.extentreports.ExtentTest;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.lucidity.data.cart.CartDataProvider;
 import com.lucidity.enums.OfferType;
@@ -11,17 +10,23 @@ import com.lucidity.restclients.clients.CartServiceRestClient;
 import com.lucidity.restclients.clients.MockServiceRestClient;
 import com.lucidity.restclients.clients.OfferRestClient;
 import com.lucidity.utils.DeserializerHelper;
-import com.lucidity.reporting.ReportManager;
 import com.lucidity.validator.cart.CartValidator;
 import io.restassured.response.Response;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.testng.asserts.SoftAssert;
 
 import java.util.List;
 
 public class CartOfferApplicationTests {
+
+    @BeforeMethod
+    private void clearMock(){
+        MockServiceRestClient.clearAllMocks();
+    }
 
     private static final Logger LOGGER = LogManager.getLogger(CartOfferApplicationTests.class);
 
@@ -79,7 +84,7 @@ public class CartOfferApplicationTests {
         // Step 5: Assertion for expected value
         softAssert.assertEquals(applyCartResponse.getCartValue(), expectedFinalValue,
                 "Cart value after applying offer should match expected final value");
-        MockServiceRestClient.clearAllMocks();
+        
         softAssert.assertAll();
     }
 
@@ -101,7 +106,7 @@ public class CartOfferApplicationTests {
         // Step 4: Assertion for expected value
         softAssert.assertEquals(applyCartResponse.getCartValue(), 100,
                 "Cart value after applying offer should match expected final value");
-        MockServiceRestClient.clearAllMocks();
+        
         softAssert.assertAll();
     }
 
@@ -127,7 +132,7 @@ public class CartOfferApplicationTests {
         // Step 5: Assertion for expected value
         softAssert.assertEquals(applyCartResponse.getCartValue(), 100,
                 "Cart value after applying offer should match expected final value");
-        MockServiceRestClient.clearAllMocks();
+        
         softAssert.assertAll();
     }
 
@@ -153,7 +158,7 @@ public class CartOfferApplicationTests {
         // Step 5: Assertion for expected value
         softAssert.assertEquals(applyCartResponse.getCartValue(), 0,
                 "Cart value after applying offer should match expected final value");
-        MockServiceRestClient.clearAllMocks();
+        
         softAssert.assertAll();
     }
 
@@ -191,7 +196,7 @@ public class CartOfferApplicationTests {
         softAssert.assertEquals(applyCartResponse2.getCartValue(), 130,
                 "Cart value response 2 after applying offer should match expected final value");
 
-        MockServiceRestClient.clearAllMocks();
+        
         softAssert.assertAll();
     }
 
@@ -217,7 +222,7 @@ public class CartOfferApplicationTests {
         // Step 5: Assertion for expected value
         softAssert.assertEquals(applyCartResponse.getCartValue(), 0,
                 "Cart value after applying offer should match expected final value");
-        MockServiceRestClient.clearAllMocks();
+        
         softAssert.assertAll();
     }
 
@@ -244,7 +249,7 @@ public class CartOfferApplicationTests {
         // Step 5: Assertion for expected value
         softAssert.assertEquals(applyCartResponse.getCartValue(), 200,
                 "Max offer should get applied");
-        MockServiceRestClient.clearAllMocks();
+        
         softAssert.assertAll();
     }
 
@@ -270,7 +275,11 @@ public class CartOfferApplicationTests {
         // Step 5: Assertion for expected value
         softAssert.assertEquals(applyCartResponse.getCartValue(), 200,
                 "Max offer should get applied");
-        MockServiceRestClient.clearAllMocks();
         softAssert.assertAll();
+    }
+    
+    @AfterMethod
+    public void removeMocks(){
+        MockServiceRestClient.clearAllMocks();
     }
 }
