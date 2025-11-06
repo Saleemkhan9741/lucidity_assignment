@@ -15,7 +15,7 @@ How to Run the Tests
 Clone the Automation Repository
 
     git clone https://github.com/Saleemkhan9741/lucidity_assignment
-    cd lucidity_assigment
+    cd lucidity_assignment
 
 Set Up the Environment 
 
