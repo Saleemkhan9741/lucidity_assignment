@@ -25,6 +25,25 @@ public class CartOfferApplicationTests {
 
     private static final Logger LOGGER = LogManager.getLogger(CartOfferApplicationTests.class);
 
+    private static OfferRequest createOffer(String offerType, String restaurantId, int offerValue, String userSegment) throws JsonProcessingException {
+        OfferRequest offerRequest = OfferRequest.builder()
+                .offerType(offerType)
+                .restaurantId(Integer.parseInt(restaurantId))
+                .offerValue(offerValue)
+                .customerSegment(List.of(userSegment))
+                .build();
+        OfferRestClient.getInstance().addOffer(offerRequest);
+        return offerRequest;
+    }
+
+    private static CartRequest createCartRequest(int cartValue, String restaurantId, int userId) {
+        return CartRequest.builder()
+                .cartValue(cartValue)
+                .restaurantId(Integer.parseInt(restaurantId))
+                .userId(1)
+                .build();
+     }
+
     @Test(dataProvider = "offerTestData", dataProviderClass = CartDataProvider.class,
             description = "Verify apply cart API for multiple offer types and segments")
     public void verifyApplyCartWithVariousOffers(
@@ -44,20 +63,10 @@ public class CartOfferApplicationTests {
         MockServiceRestClient.mockUserSegment("1", userSegment);
 
         // Step 2: Create offer
-        OfferRequest offerRequest = OfferRequest.builder()
-                .offerType(offerType)
-                .restaurantId(Integer.parseInt(restaurantId))
-                .offerValue(offerValue)
-                .customerSegment(List.of(userSegment))
-                .build();
-        OfferRestClient.getInstance().addOffer(offerRequest);
-
+        OfferRequest offerRequest = createOffer(offerType, restaurantId, offerValue, userSegment);
         // Step 3: Apply cart offer
-        CartRequest cartRequest = CartRequest.builder()
-                .cartValue(cartValue)
-                .restaurantId(Integer.parseInt(restaurantId))
-                .userId(1)
-                .build();
+        CartRequest cartRequest = createCartRequest(cartValue,restaurantId,1);
+
         Response response = CartServiceRestClient.getInstance().applyOffer(cartRequest);
 
         // Step 4: Deserialize and validate
@@ -81,11 +90,8 @@ public class CartOfferApplicationTests {
         // Step 1: Mock user segment
         MockServiceRestClient.mockUserSegment("5", "p10");
         // Step 2: Apply cart offer
-        CartRequest cartRequest = CartRequest.builder()
-                .cartValue(100)
-                .restaurantId(1)
-                .userId(5)
-                .build();
+        CartRequest cartRequest = createCartRequest(100,"1",5);
+
         Response response = CartServiceRestClient.getInstance().applyOffer(cartRequest);
 
         // Step 3: Deserialize and validate
@@ -104,23 +110,14 @@ public class CartOfferApplicationTests {
         SoftAssert softAssert = new SoftAssert();
 
         // Step 1: Mock user segment
-        MockServiceRestClient.mockUserSegment("10", "p4");
+        MockServiceRestClient.mockUserSegment("10", "p3");
 
         // Step 2: Create offer
-        OfferRequest offerRequest = OfferRequest.builder()
-                .offerType(OfferType.FLATX.name())
-                .restaurantId(1)
-                .offerValue(10)
-                .customerSegment(List.of("p4"))
-                .build();
-        OfferRestClient.getInstance().addOffer(offerRequest);
+        createOffer(OfferType.FLATX.name(), "1",10,"3");
 
         // Step 3: Apply cart offer
-        CartRequest cartRequest = CartRequest.builder()
-                .cartValue(100)
-                .restaurantId(2)
-                .userId(1)
-                .build();
+        CartRequest cartRequest = createCartRequest(100,"2",10);
+
         Response response = CartServiceRestClient.getInstance().applyOffer(cartRequest);
 
         // Step 4: Deserialize and validate
@@ -142,20 +139,11 @@ public class CartOfferApplicationTests {
         MockServiceRestClient.mockUserSegment("1", "p11");
 
         // Step 2: Create offer
-        OfferRequest offerRequest = OfferRequest.builder()
-                .offerType(OfferType.FLATX.name())
-                .restaurantId(1)
-                .offerValue(150)
-                .customerSegment(List.of("p11"))
-                .build();
-        OfferRestClient.getInstance().addOffer(offerRequest);
+        createOffer(OfferType.FLATX.name(), "1",150,"p11");
 
         // Step 3: Apply cart offer
-        CartRequest cartRequest = CartRequest.builder()
-                .cartValue(100)
-                .restaurantId(1)
-                .userId(1)
-                .build();
+        CartRequest cartRequest = createCartRequest(100,"1",1);
+
         Response response = CartServiceRestClient.getInstance().applyOffer(cartRequest);
 
         // Step 4: Deserialize and validate
@@ -177,28 +165,11 @@ public class CartOfferApplicationTests {
         MockServiceRestClient.mockUserSegment("20", "p15");
 
         // Step 2: Create offer
-        OfferRequest offerRequest1 = OfferRequest.builder()
-                .offerType(OfferType.FLATX.name())
-                .restaurantId(1)
-                .offerValue(100)
-                .customerSegment(List.of("p15"))
-                .build();
-        OfferRestClient.getInstance().addOffer(offerRequest1);
-
-        OfferRequest offerRequest2 = OfferRequest.builder()
-                .offerType(OfferType.FLATX.name())
-                .restaurantId(2)
-                .offerValue(20)
-                .customerSegment(List.of("p15"))
-                .build();
-        OfferRestClient.getInstance().addOffer(offerRequest2);
+        createOffer(OfferType.FLATX.name(), "1",150,"p15");
+        createOffer(OfferType.FLATX.name(), "2",20,"p15");
 
         // Step 3: Apply cart offer
-        CartRequest cartRequest1 = CartRequest.builder()
-                .cartValue(150)
-                .restaurantId(1)
-                .userId(20)
-                .build();
+        CartRequest cartRequest1 = createCartRequest(150,"1",20);
         Response response = CartServiceRestClient.getInstance().applyOffer(cartRequest1);
 
         ApplyCartResponse applyCartResponse1 = DeserializerHelper.getObjectMapper()
@@ -208,11 +179,7 @@ public class CartOfferApplicationTests {
         softAssert.assertEquals(applyCartResponse1.getCartValue(), 50,
                 "Cart value response 1 after applying offer should match expected final value");
 
-        CartRequest cartRequest2 = CartRequest.builder()
-                .cartValue(150)
-                .restaurantId(2)
-                .userId(20)
-                .build();
+        CartRequest cartRequest2 = createCartRequest(150,"2",20);
         // Step 4: Deserialize and validate
 
         Response response2 = CartServiceRestClient.getInstance().applyOffer(cartRequest2);
@@ -236,19 +203,11 @@ public class CartOfferApplicationTests {
         MockServiceRestClient.mockUserSegment("10", "p12");
 
         // Step 2: Create offer
-        OfferRequest offerRequest = OfferRequest.builder()
-                .offerType(OfferType.FLATX.name())
-                .restaurantId(1)
-                .offerValue(150)
-                .customerSegment(List.of("p12"))
-                .build();
-        OfferRestClient.getInstance().addOffer(offerRequest);
+        createOffer(OfferType.FLATX.name(), "1",150,"p12");
 
         // Step 3: Apply cart offer
-        CartRequest cartRequest = CartRequest.builder()
-                .restaurantId(1)
-                .userId(1)
-                .build();
+        CartRequest cartRequest = createCartRequest(0,"1",1);
+
         Response response = CartServiceRestClient.getInstance().applyOffer(cartRequest);
 
         // Step 4: Deserialize and validate
@@ -270,29 +229,12 @@ public class CartOfferApplicationTests {
         MockServiceRestClient.mockUserSegment("1", "p3");
 
         // Step 2: Create offer
-        OfferRequest offerRequest1 = OfferRequest.builder()
-                .offerType(OfferType.FLATX.name())
-                .restaurantId(1)
-                .offerValue(150)
-                .customerSegment(List.of("p3"))
-                .build();
-        OfferRestClient.getInstance().addOffer(offerRequest1);
-
-        // Step 2: Create offer
-        OfferRequest offerRequest2 = OfferRequest.builder()
-                .offerType(OfferType.FLATX.name())
-                .restaurantId(1)
-                .offerValue(200)
-                .customerSegment(List.of("p3"))
-                .build();
-        OfferRestClient.getInstance().addOffer(offerRequest2);
+        createOffer(OfferType.FLATX.name(), "1",150,"p3");
+        createOffer(OfferType.FLATX.name(), "1",200,"p3");
 
         // Step 3: Apply cart offer
-        CartRequest cartRequest = CartRequest.builder()
-                .restaurantId(1)
-                .userId(1)
-                .cartValue(200)
-                .build();
+        CartRequest cartRequest = createCartRequest(200,"1",1);
+
         Response response = CartServiceRestClient.getInstance().applyOffer(cartRequest);
 
         // Step 4: Deserialize and validate
@@ -314,20 +256,11 @@ public class CartOfferApplicationTests {
         MockServiceRestClient.mockUserSegment("20", "p1");
 
         // Step 2: Create offer
-        OfferRequest offerRequest = OfferRequest.builder()
-                .offerType(OfferType.FLATX.name())
-                .restaurantId(1)
-                .offerValue(-10)
-                .customerSegment(List.of("p1"))
-                .build();
-        OfferRestClient.getInstance().addOffer(offerRequest);
+        createOffer(OfferType.FLATX.name(),"1",-10,"p1");
 
         // Step 3: Apply cart offer
-        CartRequest cartRequest = CartRequest.builder()
-                .restaurantId(1)
-                .userId(20)
-                .cartValue(200)
-                .build();
+        CartRequest cartRequest = createCartRequest(200,"1",20);
+
         Response response = CartServiceRestClient.getInstance().applyOffer(cartRequest);
 
         // Step 4: Deserialize and validate
